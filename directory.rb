@@ -38,9 +38,13 @@ def load_students(filename = "students.csv")
   file = File.open("students.csv", "r")
   file.readlines.each do |line|
   name, cohort, hobbies, hair = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
+  add_students(name, cohort, hobbies, hair)
   end
   file.close
+end
+
+def add_students(name, cohort, hobbies, hair)
+  @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
 end
 
 def input_students
@@ -51,7 +55,7 @@ def input_students
     cohort = get_input("Please enter the cohort of the student", "January")
     hobbies = get_input("Please enter the hobbies of the student", "non existent")
     hair = get_input("Please enter the hair colour of the student", "no")
-    @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
+    add_students(name, cohort, hobbies, hair)
     puts "Now we have #{@students.count} students"
     name = get_input("To finish, just hit return twice, or enter another name to carry on adding students", "N/A")
   end
