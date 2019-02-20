@@ -6,10 +6,9 @@ def print_header
   puts "--------------------------------".center(100)
 end
 
-def print_students_list(cohort)
+def print_cohort_list(cohort)
   print_header
-  @students = @students.select {|student| student[:name][0] == "A" && student[:name].length < 12 && student[:cohort] == cohort.to_sym}
-  @students.each_with_index do |student, i|
+  @students.select {|student| student[:cohort] == cohort.to_sym}.each_with_index do |student, i|
     puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
   end
 end
@@ -24,9 +23,9 @@ def get_input(string_message, default_value)
     #Display string asking for input
     puts string_message
     #Get user input
-    user_input = STDIN.gets.delete_suffix("\n")
+    user_input = STDIN.gets.chomp
     puts "You entered '#{user_input}'. If you are happy with this value then hit enter, otherwise type no"
-    user_happy = STDIN.gets.delete_suffix("\n")
+    user_happy = STDIN.gets.chomp
     #Break loop if user is happy with input, otherwise start loop again
     break if user_happy.empty?
   end
@@ -34,28 +33,28 @@ def get_input(string_message, default_value)
   user_input.empty? ? default_value : user_input
 end
 
-def load_students(filename = "students.csv")
+def load_students_csv(filename = "students.csv")
   file = File.open("students.csv", "r")
   file.readlines.each do |line|
   name, cohort, hobbies, hair = line.chomp.split(',')
-  add_students(name, cohort, hobbies, hair)
+  add_student(name, cohort, hobbies, hair)
   end
   file.close
 end
 
-def add_students(name, cohort, hobbies, hair)
+def add_student(name, cohort, hobbies, hair)
   @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
 end
 
 def input_students
   name = get_input("Please enter the name of the student", "N/A")
-  # while the name is not empty, repeat this code
+  # while the name is not N/A, repeat this code
   while name != "N/A" do
     # get the first student
     cohort = get_input("Please enter the cohort of the student", "January")
     hobbies = get_input("Please enter the hobbies of the student", "non existent")
     hair = get_input("Please enter the hair colour of the student", "no")
-    add_students(name, cohort, hobbies, hair)
+    add_student(name, cohort, hobbies, hair)
     puts "Now we have #{@students.count} students"
     name = get_input("To finish, just hit return twice, or enter another name to carry on adding students", "N/A")
   end
@@ -69,33 +68,25 @@ def print_menu
   puts "9. Exit" # 9 because we'll be adding more items
 end
 
-def show_students
-  print_students_list(get_input("Choose a cohort to view", "January"))
+def show_students_in_cohort
+  print_cohort_list(get_input("Choose a cohort to view", "January"))
   print_footer
 end
 
-def process(selection)
-  case selection
-    when "1"
-      input_students
-    when "2"
-      show_students
-    when "3"
-       save_students
-    when "4"
-       load_students
-    when "9"
-      exit
-    else
-      puts "I don't know what you mean, try again"
-  end
+def process_menu_interaction(selection)
+    input_students if selection == "1"
+    show_students_in_cohort if selection == "2"
+    save_students if selection == "3"
+    load_students_csv if selection == "4"
+    exit if selection == "9"
+    puts "I don't know what you mean, try again"
 end
 
 def interactive_menu
-  try_load_students
+  try_load_students_csv
   loop do
     print_menu
-    process(STDIN.gets.chomp)
+    process_menu_interaction(STDIN.gets.chomp)
   end
 end
 
@@ -111,11 +102,11 @@ def save_students
   file.close
 end
 
-def try_load_students
+def try_load_students_csv
   filename = ARGV.first # first argument from the command line
-  return if filename.nil? # get out of the method if it isn't given
+  return load_students_csv if filename.nil? # get out of the method if it isn't given
   if File.exists?(filename) # if it exists
-    load_students(filename)
+    load_students_csv(filename)
      puts "Loaded #{@students.count} from #{filename}"
   else # if it doesn't exist
     puts "Sorry, #{filename} doesn't exist."
