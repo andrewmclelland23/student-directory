@@ -38,11 +38,14 @@ def input_students
   # while the name is not empty, repeat this code
   while !name.empty? do
     # get the first student
+    puts "Please enter the cohort of the student"
+    cohort = gets.chomp
+    cohort = "January" if cohort.empty?
     puts "Please enter the hobbies of the student"
     hobbies = gets.chomp
     puts "Please enter the hair colour of the student"
     hair = gets.chomp
-    students << {name: name, cohort: :november, hobbies: hobbies, hair: hair}
+    students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
     puts "Now we have #{students.count} students"
     puts "To finish, just hit return, or enter another name to carry on adding students"
     name = gets.chomp
