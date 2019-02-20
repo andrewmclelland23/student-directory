@@ -13,22 +13,22 @@ students = [
   {name: "Norman Bates", cohort: :november}
 ]
 def print_header
-  puts "The students of Villains Academy"
-  puts "---------------------------------"
+  puts "The students of Villains Academy".center(100)
+  puts "--------------------------------".center(100)
 end
 
 def print(students)
   count = 0
   while count < students.length do
     if students[count][:name][0] == "A" && students[count][:name].length < 12
-      puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort). Hobbies are #{students[count][:hobbies]} and hair colour is #{students[count][:hair]}"
+      puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort). Hobbies are #{students[count][:hobbies]} and hair colour is #{students[count][:hair]}".center(100)
     end
     count += 1
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  puts "Overall, we have #{students.count} great students".center(100)
 end
 
 def input_students
