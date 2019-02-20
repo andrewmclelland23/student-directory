@@ -34,6 +34,15 @@ def get_input(string_message, default_value)
   user_input.empty? ? default_value : user_input
 end
 
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+  name, cohort, hobbies, hair = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
+  end
+  file.close
+end
+
 def input_students
   name = get_input("Please enter the name of the student", "N/A")
   # while the name is not empty, repeat this code
@@ -52,6 +61,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Loads the list of students from students.csv"
   puts "9. Exit" # 9 because we'll be adding more items
 end
 
@@ -68,6 +78,8 @@ def process(selection)
       show_students
     when "3"
        save_students
+    when "4"
+       load_students
     when "9"
       exit
     else
