@@ -20,7 +20,9 @@ end
 def print(students)
   count = 0
   while count < students.length do
-    puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort)" if students[count][:name][0] == "A" && students[count][:name].length < 12
+    if students[count][:name][0] == "A" && students[count][:name].length < 12
+      puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort). Hobbies are #{students[count][:hobbies]} and hair colour is #{students[count][:hair]}"
+    end
     count += 1
   end
 end
@@ -30,16 +32,19 @@ def print_footer(students)
 end
 
 def input_students
-  puts "Please enter the names of the students\nTo finish, just hit return twice"
-  # Create an empty array
   students = []
-  # get the first names
+  puts "Please enter the name of the student"
   name = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
-    students << {name: name, cohort: :november}
+    # get the first student
+    puts "Please enter the hobbies of the student"
+    hobbies = gets.chomp
+    puts "Please enter the hair colour of the student"
+    hair = gets.chomp
+    students << {name: name, cohort: :november, hobbies: hobbies, hair: hair}
     puts "Now we have #{students.count} students"
-    # get another name from the user
+    puts "To finish, just hit return, or enter another name to carry on adding students"
     name = gets.chomp
   end
   # return the array of input_students
