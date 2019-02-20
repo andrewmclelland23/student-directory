@@ -31,24 +31,30 @@ def print_footer(students)
   puts "Overall, we have #{students.count} great students".center(100)
 end
 
+def get_input(string_message, default_value)
+  user_input = ""
+  while true do
+    puts string_message
+    user_input = gets.chomp
+    puts "You entered '#{user_input}'. If you are happy with this value then type yes, otherwise type no"
+    user_happy = gets.chomp
+    break if user_happy.downcase == "yes"
+  end
+  user_input.empty? ? default_value : user_input
+end
+
 def input_students
   students = []
-  puts "Please enter the name of the student"
-  name = gets.chomp
+  name = get_input("Please enter the name of the student", "N/A")
   # while the name is not empty, repeat this code
-  while !name.empty? do
+  while name != "N/A" do
     # get the first student
-    puts "Please enter the cohort of the student"
-    cohort = gets.chomp
-    cohort = "January" if cohort.empty?
-    puts "Please enter the hobbies of the student"
-    hobbies = gets.chomp
-    puts "Please enter the hair colour of the student"
-    hair = gets.chomp
+    cohort = get_input("Please enter the cohort of the student", "January")
+    hobbies = get_input("Please enter the hobbies of the student", "None")
+    hair = get_input("Please enter the hair colour of the student", "Bald")
     students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
     puts "Now we have #{students.count} students"
-    puts "To finish, just hit return, or enter another name to carry on adding students"
-    name = gets.chomp
+    name = get_input("To finish, just hit return twice, or enter another name to carry on adding students", "N/A")
   end
   # return the array of input_students
   students
