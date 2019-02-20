@@ -18,8 +18,10 @@ def print_header
 end
 
 def print(students)
-  students.each_with_index do |student, i|
-    puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0] == "A" && student[:name].length < 12
+  count = 0
+  while count < students.length do
+    puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort)" if students[count][:name][0] == "A" && students[count][:name].length < 12
+    count += 1
   end
 end
 
