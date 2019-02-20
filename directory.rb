@@ -27,9 +27,9 @@ def get_input(string_message, default_value)
     #Display string asking for input
     puts string_message
     #Get user input
-    user_input = gets.chomp
+    user_input = gets.delete_suffix("\n")
     puts "You entered '#{user_input}'. If you are happy with this value then hit enter, otherwise type no"
-    user_happy = gets.chomp
+    user_happy = gets.delete_suffix("\n")
     #Break loop if user is happy with input, otherwise start loop again
     break if user_happy.empty?
   end
