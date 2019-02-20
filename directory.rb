@@ -24,9 +24,9 @@ def get_input(string_message, default_value)
     #Display string asking for input
     puts string_message
     #Get user input
-    user_input = gets.delete_suffix("\n")
+    user_input = STDIN.gets.delete_suffix("\n")
     puts "You entered '#{user_input}'. If you are happy with this value then hit enter, otherwise type no"
-    user_happy = gets.delete_suffix("\n")
+    user_happy = STDIN.gets.delete_suffix("\n")
     #Break loop if user is happy with input, otherwise start loop again
     break if user_happy.empty?
   end
@@ -34,7 +34,7 @@ def get_input(string_message, default_value)
   user_input.empty? ? default_value : user_input
 end
 
-def load_students
+def load_students(filename = "students.csv")
   file = File.open("students.csv", "r")
   file.readlines.each do |line|
   name, cohort, hobbies, hair = line.chomp.split(',')
@@ -88,9 +88,10 @@ def process(selection)
 end
 
 def interactive_menu
+  try_load_students
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -104,6 +105,18 @@ def save_students
     file.puts csv_line
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
 end
 
 interactive_menu
