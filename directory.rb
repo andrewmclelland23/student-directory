@@ -1,29 +1,19 @@
 # First thing's first, lets pop these students into a cheeky array
 students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
+  {name: "Andy", cohort: :January, hobbies: "Tennis", hair: "brown"},
+  {name: "Andrew", cohort: :January, hobbies: "Football", hair: "bald"},
+  {name: "Angela", cohort: :February, hobbies: "Tennis", hair: "red"}
 ]
 def print_header
   puts "The students of Villains Academy".center(100)
   puts "--------------------------------".center(100)
 end
 
-def print(students)
-  count = 0
-  while count < students.length do
-    if students[count][:name][0] == "A" && students[count][:name].length < 12
-      puts "#{count + 1} #{students[count][:name]} (#{students[count][:cohort]} cohort). Hobbies are #{students[count][:hobbies]} and hair colour is #{students[count][:hair]}".center(100)
-    end
-    count += 1
+def print(student_list, cohort)
+  print_header
+  students = student_list.select {|student| student[:name][0] == "A" && student[:name].length < 12 && student[:cohort] == cohort.to_sym}
+  students.each_with_index do |student, i|
+    puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
   end
 end
 
@@ -34,12 +24,16 @@ end
 def get_input(string_message, default_value)
   user_input = ""
   while true do
+    #Display string asking for input
     puts string_message
+    #Get user input
     user_input = gets.chomp
-    puts "You entered '#{user_input}'. If you are happy with this value then type yes, otherwise type no"
+    puts "You entered '#{user_input}'. If you are happy with this value then hit enter, otherwise type no"
     user_happy = gets.chomp
-    break if user_happy.downcase == "yes"
+    #Break loop if user is happy with input, otherwise start loop again
+    break if user_happy.empty?
   end
+  #Returns default value if the user input is empty
   user_input.empty? ? default_value : user_input
 end
 
@@ -50,8 +44,8 @@ def input_students
   while name != "N/A" do
     # get the first student
     cohort = get_input("Please enter the cohort of the student", "January")
-    hobbies = get_input("Please enter the hobbies of the student", "None")
-    hair = get_input("Please enter the hair colour of the student", "Bald")
+    hobbies = get_input("Please enter the hobbies of the student", "non existent")
+    hair = get_input("Please enter the hair colour of the student", "no")
     students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
     puts "Now we have #{students.count} students"
     name = get_input("To finish, just hit return twice, or enter another name to carry on adding students", "N/A")
@@ -61,6 +55,5 @@ def input_students
 end
 
 students = input_students
-print_header
-print(students)
+print(students, get_input("Choose a cohort to view", "January"))
 print_footer(students)
