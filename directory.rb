@@ -1,7 +1,7 @@
 # First thing's first, lets pop these students into a cheeky array
 students = [
   {name: "Andy", cohort: :January, hobbies: "Tennis", hair: "brown"},
-  {name: "Andrew", cohort: :January, hobbies: "Football", hair: "bald"},
+  {name: "Andrew", cohort: :January, hobbies: "Football", hair: "no"},
   {name: "Angela", cohort: :February, hobbies: "Tennis", hair: "red"}
 ]
 def print_header
@@ -18,7 +18,7 @@ def print(student_list, cohort)
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(100)
+  puts "Overall, we have #{students.count} great student#{students.count > 1 ? "s" :""}".center(100)
 end
 
 def get_input(string_message, default_value)
