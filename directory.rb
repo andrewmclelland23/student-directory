@@ -1,23 +1,32 @@
 @students = [] # an empty array accessible to all methods
 # First thing's first, lets pop these students into a cheeky array
 
-def print_header
-  puts "The students of Villains Academy".center(100)
+def print_header(cohort)
+  puts "The students of Villains Academy - #{cohort} Cohort#{cohort.downcase == "all" ? "s" : ""}".center(100)
   puts "--------------------------------".center(100)
 end
 
 def print_cohort_list(cohort)
-  print_header
-  @students.select {|student| student[:cohort] == cohort.to_sym}.each_with_index do |student, i|
-    puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
+  print_header(cohort)
+  if cohort.downcase != "all"
+    @students.select {|student| student[:cohort] == cohort.to_sym}.each_with_index do |student, i|
+      puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
+    end
+  else
+    @students.each_with_index do |student, i|
+      puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
+    end
   end
 end
 
-def print_footer
-  puts "Overall, we have #{@students.count} great student#{@students.count > 1 ? "s" :""}".center(100)
+def print_footer(cohort)
+  count_students_in_cohort = @students.select {|student| student[:cohort] == cohort.to_sym}.length
+  count_students = @students.count
+  puts "In this cohort we have #{count_students_in_cohort} great student#{count_students_in_cohort > 1 ? "s" :""}".center(100) if cohort.downcase != "all"
+  puts "Overall, we have #{count_students} great student#{count_students > 1 ? "s" :""}".center(100)
 end
 
-def get_input(string_message, default_value)
+def get_input(string_message, default_value = "")
   user_input = ""
   while true do
     #Display string asking for input
@@ -33,15 +42,6 @@ def get_input(string_message, default_value)
   user_input.empty? ? default_value : user_input
 end
 
-def load_students_csv(filename = "students.csv")
-  file = File.open("students.csv", "r")
-  file.readlines.each do |line|
-  name, cohort, hobbies, hair = line.chomp.split(',')
-  add_student(name, cohort, hobbies, hair)
-  end
-  file.close
-end
-
 def add_student(name, cohort, hobbies, hair)
   @students << {name: name, cohort: cohort.to_sym, hobbies: hobbies, hair: hair}
 end
@@ -50,7 +50,6 @@ def input_students
   name = get_input("Please enter the name of the student", "N/A")
   # while the name is not N/A, repeat this code
   while name != "N/A" do
-    # get the first student
     cohort = get_input("Please enter the cohort of the student", "January")
     hobbies = get_input("Please enter the hobbies of the student", "non existent")
     hair = get_input("Please enter the hair colour of the student", "no")
@@ -58,6 +57,7 @@ def input_students
     puts "Now we have #{@students.count} students"
     name = get_input("To finish, just hit return twice, or enter another name to carry on adding students", "N/A")
   end
+  print_status_message("New students have been Succesfully enrolled")
 end
 
 def print_menu
@@ -69,16 +69,17 @@ def print_menu
 end
 
 def show_students_in_cohort
-  print_cohort_list(get_input("Choose a cohort to view", "January"))
-  print_footer
+  cohort = get_input("Choose a cohort to view. To see all cohorts type 'all'.", "January")
+  print_cohort_list(cohort)
+  print_footer(cohort)
 end
 
 def process_menu_interaction(selection)
-    input_students if selection == "1"
-    show_students_in_cohort if selection == "2"
-    save_students if selection == "3"
-    load_students_csv if selection == "4"
-    exit if selection == "9"
+    return input_students if selection == "1"
+    return show_students_in_cohort if selection == "2"
+    return save_students if selection == "3"
+    return load_students_csv if selection == "4"
+    return exit if selection == "9"
     puts "I don't know what you mean, try again"
 end
 
@@ -100,6 +101,27 @@ def save_students
     file.puts csv_line
   end
   file.close
+  print_status_message("Succesfully saved to students.csv")
+end
+
+def print_status_message(message)
+  puts "\n#{"-" * (message.length + 20)}\n"
+  puts (message).center(message.length + 20)
+  puts "#{"-" * (message.length + 20)}\n\n"
+end
+
+def load_students_csv(filename = "students.csv")
+  if File.exists?(filename) # if it exists
+    file = File.open(filename, "r")
+    file.readlines.each do |line|
+      name, cohort, hobbies, hair = line.chomp.split(',')
+      add_student(name, cohort, hobbies, hair)
+    end
+    file.close
+    print_status_message("Succesfully loaded students from #{filename}")
+  else
+    print_status_message("File #{filename} not found. Please input some students (Option 1) and save them (Option 3) before attempting to load from a file")
+  end
 end
 
 def try_load_students_csv
