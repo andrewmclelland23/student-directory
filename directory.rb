@@ -92,14 +92,13 @@ def interactive_menu
 end
 
 def save_students(filename)
-  file = File.open(filename, "w")
-  # iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort],student[:hobbies], student[:hair]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open(filename, "w") do |file|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort],student[:hobbies], student[:hair]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
-  file.close
   print_status_message("Succesfully saved to #{filename}")
 end
 
@@ -111,12 +110,12 @@ end
 
 def load_students_csv(filename = "students.csv")
   if File.exists?(filename) # if it exists
-    file = File.open(filename, "r")
-    file.readlines.each do |line|
-      name, cohort, hobbies, hair = line.chomp.split(',')
-      add_student(name, cohort, hobbies, hair)
+    File.open(filename, "r") do |file|
+      file.readlines.each do |line|
+        name, cohort, hobbies, hair = line.chomp.split(',')
+        add_student(name, cohort, hobbies, hair)
+      end
     end
-    file.close
     print_status_message("Succesfully loaded students from #{filename}")
   else
     print_status_message("File #{filename} not found. Please input some students (Option 1) and save them (Option 3) before attempting to load from a file")
