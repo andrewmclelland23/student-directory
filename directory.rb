@@ -1,14 +1,16 @@
+require 'csv'
+
 @students = [] # an empty array accessible to all methods
 # First thing's first, lets pop these students into a cheeky array
 
 def print_header(cohort)
-  puts "The students of Villains Academy - #{cohort} Cohort#{cohort.downcase == "all" ? "s" : ""}".center(100)
+  puts "The students of Villains Academy - #{cohort} Cohort#{cohort.empty? ? "s" : ""}".center(100)
   puts "--------------------------------".center(100)
 end
 
 def print_cohort_list(cohort)
   print_header(cohort)
-  if cohort.downcase != "all"
+  if !cohort.empty?
     @students.select {|student| student[:cohort] == cohort.to_sym}.each_with_index do |student, i|
       puts "#{i + 1} #{student[:name]} (#{student[:cohort]} cohort). Hobbies are #{student[:hobbies]} and student has #{student[:hair]} hair".center(100)
     end
@@ -69,7 +71,7 @@ def print_menu
 end
 
 def show_students_in_cohort
-  cohort = get_input("Choose a cohort to view. To see all cohorts type 'all'.", "January")
+  cohort = get_input("Choose a cohort to view. To see all cohorts just hit return twice", "")
   print_cohort_list(cohort)
   print_footer(cohort)
 end
@@ -92,13 +94,11 @@ def interactive_menu
 end
 
 def save_students(filename)
-  File.open(filename, "w") do |file|
-    @students.each do |student|
-      student_data = [student[:name], student[:cohort],student[:hobbies], student[:hair]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+    CSV.open(filename, "w") do |csv|
+      @students.each do |student|
+        csv << [student[:name], student[:cohort],student[:hobbies], student[:hair]]
+      end
     end
-  end
   print_status_message("Succesfully saved to #{filename}")
 end
 
@@ -110,11 +110,9 @@ end
 
 def load_students_csv(filename = "students.csv")
   if File.exists?(filename) # if it exists
-    File.open(filename, "r") do |file|
-      file.readlines.each do |line|
-        name, cohort, hobbies, hair = line.chomp.split(',')
-        add_student(name, cohort, hobbies, hair)
-      end
+    CSV.foreach(filename) do |row|
+      name, cohort, hobbies, hair = row
+      add_student(name, cohort, hobbies, hair)
     end
     print_status_message("Succesfully loaded students from #{filename}")
   else
