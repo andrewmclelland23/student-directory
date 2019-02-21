@@ -63,8 +63,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Loads the list of students from students.csv"
+  puts "3. Save the list of students to a csv file"
+  puts "4. Load a list of students from a csv file"
   puts "9. Exit" # 9 because we'll be adding more items
 end
 
@@ -77,8 +77,8 @@ end
 def process_menu_interaction(selection)
     return input_students if selection == "1"
     return show_students_in_cohort if selection == "2"
-    return save_students if selection == "3"
-    return load_students_csv if selection == "4"
+    return save_students(get_input("Type in a filename to save to")) if selection == "3"
+    return load_students_csv(get_input("Type in a filename to load from")) if selection == "4"
     return exit if selection == "9"
     puts "I don't know what you mean, try again"
 end
@@ -91,9 +91,8 @@ def interactive_menu
   end
 end
 
-def save_students
-  # open the file for writing
-  file = File.open("students.csv", "w")
+def save_students(filename)
+  file = File.open(filename, "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort],student[:hobbies], student[:hair]]
@@ -101,7 +100,7 @@ def save_students
     file.puts csv_line
   end
   file.close
-  print_status_message("Succesfully saved to students.csv")
+  print_status_message("Succesfully saved to #{filename}")
 end
 
 def print_status_message(message)
